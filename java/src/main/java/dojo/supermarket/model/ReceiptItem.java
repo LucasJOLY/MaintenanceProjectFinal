@@ -9,8 +9,8 @@ public class ReceiptItem {
     private final double totalPrice;
     private final double quantity;
 
-    ReceiptItem(Product p, double quantity, double price, double totalPrice) {
-        this.product = p;
+    public ReceiptItem(Product product, double quantity, double price, double totalPrice) {
+        this.product = Objects.requireNonNull(product, "Product cannot be null");
         this.quantity = quantity;
         this.price = price;
         this.totalPrice = totalPrice;
@@ -42,6 +42,7 @@ public class ReceiptItem {
                 Double.compare(that.quantity, quantity) == 0 &&
                 Objects.equals(product, that.product);
     }
+
 
     @Override
     public int hashCode() {

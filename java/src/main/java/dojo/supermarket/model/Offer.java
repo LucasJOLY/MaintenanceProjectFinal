@@ -2,17 +2,25 @@ package dojo.supermarket.model;
 
 public class Offer {
 
-    SpecialOfferType offerType;
+    private final SpecialOfferType offerType;
     private final Product product;
-    double argument;
+    private final double argument;
 
     public Offer(SpecialOfferType offerType, Product product, double argument) {
         this.offerType = offerType;
-        this.argument = argument;
         this.product = product;
+        this.argument = argument;
     }
 
-    Product getProduct() {
+    public SpecialOfferType getOfferType() {
+        return offerType;
+    }
+
+    public Product getProduct() {
         return product;
+    }
+
+    public double getArgument() {
+        return argument;
     }
 }

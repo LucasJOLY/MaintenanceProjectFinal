@@ -1,5 +1,6 @@
 package dojo.supermarket.model;
 
 public enum ProductUnit {
-    KILO, EACH
+    KILO, // Unité de mesure pour les produits vendus au poids
+    EACH // Unité de mesure pour les produits vendus à l'unité
 }
