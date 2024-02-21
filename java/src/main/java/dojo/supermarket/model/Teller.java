@@ -1,8 +1,10 @@
 package dojo.supermarket.model;
 
+import dojo.supermarket.model.offers.*;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
 
 public class Teller {
 
@@ -14,31 +16,39 @@ public class Teller {
     }
 
     public void addSpecialOffer(SpecialOfferType offerType, Product product, double argument) {
-        offers.put(product, new Offer(offerType, product, argument));
+        switch (offerType) {
+            case THREE_FOR_TWO:
+                offers.put(product, new ThreeForTwoOffer(product, argument));
+                break;
+            case TEN_PERCENT_DISCOUNT:
+                offers.put(product, new TenPercentOffer(product, argument));
+                break;
+            case TWO_FOR_AMOUNT:
+                offers.put(product, new TwoForAmountOffer(product, argument));
+                break;
+            case FIVE_FOR_AMOUNT:
+                offers.put(product, new FiveForAmountOffer(product, argument));
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown offer type: " + offerType);
+        }
     }
 
-    public Receipt checksOutArticlesFrom(ShoppingCart cart) {
+    public Receipt checksOutArticlesFrom(ShoppingCart theCart) {
         Receipt receipt = new Receipt();
-        cart.getItems().forEach(item -> {
-            double unitPrice = catalog.getUnitPrice(item.getProduct());
-            receipt.addProduct(item.getProduct(), item.getQuantity(), unitPrice, unitPrice * item.getQuantity());
-        });
-
-        applyOffers(cart, receipt);
+        List<ProductQuantity> productQuantities = theCart.getItems();
+        for (ProductQuantity pq : productQuantities) {
+            Product p = pq.getProduct();
+            double quantity = pq.getQuantity();
+            double unitPrice = this.catalog.getUnitPrice(p);
+            double price = quantity * unitPrice;
+            receipt.addProduct(p, quantity, unitPrice, price);
+        }
+        if (!this.offers.isEmpty()) {
+            theCart.handleOffers(receipt, this.offers, this.catalog);
+        }
 
         return receipt;
     }
 
-    private void applyOffers(ShoppingCart cart, Receipt receipt) {
-        cart.productQuantities().forEach((product, quantity) -> {
-            if (offers.containsKey(product)) {
-                Offer offer = offers.get(product);
-                DiscountCalculator discountCalculator = new DiscountCalculator();
-                Discount discount = discountCalculator.calculateDiscount(offer, quantity, catalog.getUnitPrice(product));
-                if (discount != null) {
-                    receipt.addDiscount(discount);
-                }
-            }
-        });
-    }
 }

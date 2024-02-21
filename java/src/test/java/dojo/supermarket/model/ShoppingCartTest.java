@@ -1,5 +1,6 @@
 package dojo.supermarket.model;
 
+import dojo.supermarket.model.offers.SpecialOfferType;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

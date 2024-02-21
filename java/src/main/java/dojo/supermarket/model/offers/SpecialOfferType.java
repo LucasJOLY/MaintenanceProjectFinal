@@ -1,4 +1,4 @@
-package dojo.supermarket.model;
+package dojo.supermarket.model.offers;
 
 public enum SpecialOfferType {
     THREE_FOR_TWO,
