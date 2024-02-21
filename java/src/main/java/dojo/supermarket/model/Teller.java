@@ -17,18 +17,28 @@ public class Teller {
         offers.put(product, new Offer(offerType, product, argument));
     }
 
-    public Receipt checksOutArticlesFrom(ShoppingCart theCart) {
+    public Receipt checksOutArticlesFrom(ShoppingCart cart) {
         Receipt receipt = new Receipt();
-        List<ProductQuantity> productQuantities = theCart.getItems();
-        for (ProductQuantity pq: productQuantities) {
-            Product p = pq.getProduct();
-            double quantity = pq.getQuantity();
-            double unitPrice = catalog.getUnitPrice(p);
-            double price = quantity * unitPrice;
-            receipt.addProduct(p, quantity, unitPrice, price);
-        }
-        theCart.handleOffers(receipt, offers, catalog);
+        cart.getItems().forEach(item -> {
+            double unitPrice = catalog.getUnitPrice(item.getProduct());
+            receipt.addProduct(item.getProduct(), item.getQuantity(), unitPrice, unitPrice * item.getQuantity());
+        });
+
+        applyOffers(cart, receipt);
 
         return receipt;
+    }
+
+    private void applyOffers(ShoppingCart cart, Receipt receipt) {
+        cart.productQuantities().forEach((product, quantity) -> {
+            if (offers.containsKey(product)) {
+                Offer offer = offers.get(product);
+                DiscountCalculator discountCalculator = new DiscountCalculator();
+                Discount discount = discountCalculator.calculateDiscount(offer, quantity, catalog.getUnitPrice(product));
+                if (discount != null) {
+                    receipt.addDiscount(discount);
+                }
+            }
+        });
     }
 }

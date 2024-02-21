@@ -15,6 +15,7 @@ public class SupermarketCatalogMock implements SupermarketCatalog {
 
     @Override
     public double getUnitPrice(Product p) {
-        return this.prices.get(p.getName());
+        return this.prices.getOrDefault(p.getName(), 0.0);
     }
+
 }

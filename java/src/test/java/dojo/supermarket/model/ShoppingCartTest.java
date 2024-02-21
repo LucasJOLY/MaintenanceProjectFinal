@@ -15,15 +15,17 @@ class ShoppingCartTest {
     }
 
     @Test
-    void testApplyDiscount() {
+    void testApplyDiscountThroughTeller() {
         ShoppingCart cart = new ShoppingCart();
+        SupermarketCatalog catalog = new SupermarketCatalogMock(); // Cette classe mock doit être implémentée
+        Teller teller = new Teller(catalog);
         Product product = new Product("Pommes", ProductUnit.KILO);
         cart.addItemQuantity(product, 3);
-        Discount discount = new Discount(product, "Réduction de 2 euros", 2.0);
-        cart.addDiscount(discount);
+        teller.addSpecialOffer(SpecialOfferType.TEN_PERCENT_DISCOUNT, product, 10);
 
-        assertEquals(1, cart.getDiscounts().size(), "La réduction n'a pas été correctement ajoutée");
-        assertTrue(cart.getDiscounts().contains(discount), "La réduction attendue n'est pas présente dans le panier");
+        Receipt receipt = teller.checksOutArticlesFrom(cart);
+
+        // Assurez-vous que la réduction attendue est appliquée dans le reçu
+        assertTrue(receipt.getDiscounts().stream().anyMatch(d -> d.getProduct().equals(product)), "La réduction attendue n'est pas présente dans le reçu");
     }
-
 }
