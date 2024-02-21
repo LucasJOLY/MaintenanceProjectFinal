@@ -21,12 +21,17 @@ public class Product {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product)) return false;
-        Product product = (Product) o;
-        return Objects.equals(name, product.name) &&
-                unit == product.unit;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Product otherProduct)) {
+            return false;
+        }
+
+        return Objects.equals(this.name, otherProduct.name) &&
+                this.unit == otherProduct.unit;
     }
 
     @Override
